@@ -14,10 +14,8 @@ const Login = () => {
             const response = await dispatch(login({ email, password })).unwrap();
             const token = response.token; // Adjust this line based on the actual response structure
             const username = response.user.username; // Adjust this line based on the actual response structure
-            console.log(token)
             localStorage.setItem('token', token);
             localStorage.setItem('username', username);
-            console.log('User logged in:', { email, password });
         } catch (error) {
             console.error('Failed to login:', error);
         }

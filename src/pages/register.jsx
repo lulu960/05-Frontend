@@ -13,7 +13,6 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(register({ username, email, password }));
-        console.log('User registered:', { username, email, password });
     }
 
     return (

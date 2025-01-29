@@ -52,7 +52,23 @@ export const SendTweet = async (title, content, author, token) => {
         return response.data;
     } catch (error) {
         console.error('Tweet error:', error.response ? error.response.data : error.message);
-        console.log("token:", token); 
+        throw error;
+    }
+};
+
+export const GetTweets = async (token) => {
+    if (!token) {
+        throw new Error('Token is required for authentication');
+    }
+    try {
+        const response = await axiosInstance.get('api/forum/', {
+            headers: {
+                'Authorization': `${token}`,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Get Tweets error:', error.response ? error.response.data : error.message);
         throw error;
     }
 };

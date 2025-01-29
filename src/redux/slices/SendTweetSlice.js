@@ -6,7 +6,11 @@ const sendTweet = createAsyncThunk(
     'sendTweet',
     async (tweet, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post('api/forum/', tweet);
+            const response = await axiosInstance.post('api/forum/', tweet, {
+                headers: {
+                    'Authorization': `Bearer ${tweet.token}`,
+                }
+            });
             return response.data;
         } catch (error) {
             console.error('Tweet error:', error);
