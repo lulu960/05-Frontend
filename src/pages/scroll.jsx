@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTweetsBefore } from '../redux/slices/GetTweetSlice';
+import WsMessage from '../composents/wsMessage';
 
 const InfiniteScroll = () => {
     const dispatch = useDispatch();
@@ -57,6 +58,10 @@ const InfiniteScroll = () => {
             {status === 'loading' && <p>Chargement...</p>}
             {status === 'failed' && <p style={{ color: 'red' }}>Erreur lors du chargement</p>}
             {!hasMore && <p style={{ color: 'blue'}}>Fin des tweets</p>}
+            {!hasMore && <p>Fin des tweets</p>}
+        <div>
+            <WsMessage />
+        </div>
         </div>
     );
 };
