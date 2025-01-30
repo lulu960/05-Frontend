@@ -13,10 +13,11 @@ const InfiniteScroll = () => {
             dispatch(getTweetsBefore({ token, timestamp: lastTimestamp || Date.now() }))
                 .then((response) => {
                     if (response.payload.length > 0) {
-                        setLastTimestamp(new Date(response.payload[0].createdAt).getTime());
+                        setLastTimestamp(new Date(response.payload[response.payload.length - 1].createdAt).getTime());
                     } else {
                         setLastTimestamp(null); // No more tweets to load
                     }
+
                     console.log("🚀 ~ InfiniteScroll ~ lastTimestamp:", lastTimestamp);
                 });
         }
@@ -55,7 +56,7 @@ const InfiniteScroll = () => {
             ))}
             {status === 'loading' && <p>Chargement...</p>}
             {status === 'failed' && <p style={{ color: 'red' }}>Erreur lors du chargement</p>}
-            {!hasMore && <p>Fin des tweets</p>}
+            {!hasMore && <p style={{ color: 'blue'}}>Fin des tweets</p>}
         </div>
     );
 };

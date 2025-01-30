@@ -73,4 +73,21 @@ export const GetTweets = async (token) => {
     }
 };
 
+export const GetTweetsBefore = async (token, timestamp) => {
+    if (!token) {
+        throw new Error('Token is required for authentication');
+    }
+    try {
+        const response = await axiosInstance.get(`/api/forum/before/${timestamp}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Get Tweets Before error:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
+
 export default axiosInstance;
