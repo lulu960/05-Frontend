@@ -2,19 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendTweet } from '../redux/slices/SendTweetSlice';
 import { getTweets } from '../redux/slices/GetTweetSlice';
+import InfiniteScroll from './scroll';
 
 const Home = () => {
     const dispatch = useDispatch();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [author, setAuthor] = useState('');
+    const { status, error } = useSelector((state) => state.getTweets);
 
-    const tweetsStates = useSelector((state) => state.getTweets);
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        dispatch(sendTweet({ title, content, author, token }));
+
+        const response = await dispatch(sendTweet({ title, content, author, token }));
+
+        if (sendTweet.fulfilled.match(response)) {
+            dispatch(getTweets(token)); // Refresh tweets after sending
+            setTitle('');
+            setContent('');
+        }
     };
 
     useEffect(() => {
@@ -23,11 +30,6 @@ const Home = () => {
             setAuthor(storedAuthor);
         }
     }, []);
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        dispatch(getTweets(token));
-    }, [dispatch]);
 
     return (
         <div>
@@ -48,20 +50,15 @@ const Home = () => {
                     cols="50"
                 />
                 <br />
-                <button type="submit">Envoyer</button>
+                <button type="submit" disabled={status === 'loading'}>
+                    {status === 'loading' ? 'Envoi en cours...' : 'Envoyer'}
+                </button>
             </form>
 
             <h2>Tweets</h2>
-            {tweetsStates.loading && <p>Chargement...</p>}
-            {tweetsStates.error && <p>{tweetsStates.error}</p>}
-            {tweetsStates.tweets.map((tweet) => (
-                <div key={tweet._id}>
-                    <h3>{tweet.title}</h3>
-                    <p>{tweet.content}</p>
-                    <p>Écrit par {tweet.author}</p>
-                </div>
-            ))}
+            {error && <p style={{ color: 'red' }}>Erreur: {error}</p>}
 
+            <InfiniteScroll />
         </div>
     );
 };
